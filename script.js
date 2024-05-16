@@ -1,8 +1,31 @@
-body:"() => { cy.visit(baseUrl + "/main.html"); cy.get("form"); cy.get("label[for='username']").contains("Username:"); cy.get("input#username").should("be.empty"); cy.get("label[for='password']").contains("Password:"); cy.get("input#password").should("be.empty"); cy.get("label[for='checkbox']").contains("Remember me:"); cy.get("input#checkbox").should("not.be.checked"); cy.get("input#submit[value='Submit']").should("exist"); cy.get("button#existing").should("not.be.visible"); cy.window().then(win => { expect(win.localStorage.getItem("username")).to.be.null; expect(win.localStorage.getItem("password")).to.be.null; }); }"
-displayError:"AssertionError: Timed out retrying after 4000ms: Expected to find content: 'Remember me:' within the element: <label> but never did. at Context.eval (http://localhost:3000/__cypress/tests?p=cypress/integration/tests/test.spec.js:122:37)"
-state:"failed"
-body:"() => { cy.visit(baseUrl + "/main.html"); const stub = cy.stub(); cy.on("window:alert", stub); cy.get("form"); cy.get("input#username").should("be.empty").type("username"); cy.get("input#password").should("be.empty").type("password"); cy.get("input#submit[value='Submit']").click().then(() => { expect(stub.getCall(0)).to.be.calledWith("Logged in as username"); }); cy.window().then(win => { expect(win.localStorage.getItem("username")).to.be.null; expect(win.localStorage.getItem("password")).to.be.null; }); }"
-displayError:"AssertionError: Timed out retrying after 4000ms: Expected to find element: `input#submit[value='Submit']`, but never found it. at Context.eval (http://localhost:3000/__cypress/tests?p=cypress/integration/tests/test.spec.js:138:8)"
-state:"failed"
-body:"() => { loginUser("username1", "password1"); cy.get("button#existing").should("contain", "Login as existing user"); }"
-displayError:"AssertionError: Timed out retrying after 4000ms: Expected to find element: `input#submit[value='Submit']`, but never found it. at loginUser (http://localhost:3000/__cypress/tests?p=cypress/integration/tests/test.spec.js:161:6) at Context.eval (http://localhost:3000/__cypress/tests?p=cypress/integration/tests/test.spec.js:151:7)"
+document.addEventListener("DOMContentLoaded", function() {
+      const loginForm = document.getElementById("loginForm");
+      const existingButton = document.getElementById("existing");
+
+      // Check if there are saved details in local storage
+      if (localStorage.getItem("username") && localStorage.getItem("password")) {
+        existingButton.style.display = "block";
+      }
+
+      loginForm.addEventListener("submit", function(event) {
+        event.preventDefault();
+        const username = document.getElementById("username").value;
+        const password = document.getElementById("password").value;
+        const rememberMe = document.getElementById("checkbox").checked;
+
+        if (rememberMe) {
+          localStorage.setItem("username", username);
+          localStorage.setItem("password", password);
+        } else {
+          localStorage.removeItem("username");
+          localStorage.removeItem("password");
+        }
+
+        alert(`Logged in as ${username}`);
+      });
+
+      existingButton.addEventListener("click", function() {
+        const username = localStorage.getItem("username");
+        alert(`Logged in as ${username}`);
+      });
+    });

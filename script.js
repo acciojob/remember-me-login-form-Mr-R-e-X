@@ -13,6 +13,13 @@ function isEmptyObject(obj) {
   return Object.keys(obj).length === 0;
 }
 
+if (!isEmptyObject(user)) {
+    createButton();
+    document.querySelector("#existing").addEventListener("click", () => {
+      alert(`Logged is as ${user.username}.`);
+    });
+  }
+
 function createButton() {
   let existingUser = document.createElement("button");
   existingUser.setAttribute("id", "existing");
@@ -21,12 +28,6 @@ function createButton() {
 }
 
 function formSubmit() {
-  if (!isEmptyObject(user)) {
-    createButton();
-    document.querySelector("#existing").addEventListener("click", () => {
-      alert(`Logged is as ${user.username}`);
-    });
-  } else {
     submit.addEventListener("click", (e) => {
       e.preventDefault();
       let name = username.value;
@@ -38,13 +39,12 @@ function formSubmit() {
             password: pass,
           };
           localStorage.setItem("user", JSON.stringify(user));
-          alert(`Logged in as ${name}`);
+          alert(`Logged in as ${name}.`);
         } else {
           localStorage.clear();
-          alert(`Logged in as ${name}`);
+          alert(`Logged in as ${name}.`);
         }
       }
     });
-  }
 }
 formSubmit();
